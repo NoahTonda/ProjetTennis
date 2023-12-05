@@ -10,47 +10,46 @@ using System.Threading.Tasks;
 
 namespace ProjetTennis.DAO
 {
-    internal class PlayerDAO
+    internal class CourtDAO
     {
+
         private string connectionString;
-        public PlayerDAO()
+        public CourtDAO()
         {
             connectionString = ConfigurationManager.ConnectionStrings["TennisProjet"].ConnectionString;
         }
-        public List<Player> GetPlayers()
+        public List<Court> GetCourts()
         {
-            List<Player> Players = new List<Player>();
+            List<Court> Courts = new List<Court>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT P.Id_Person, P.firstname, P.lastname,P.nationality, PL.ranking, PL.gender " +
-                           "FROM Person P " +
-                           "JOIN Player PL ON P.Id_Person = PL.Id_Person", connection);
+                SqlCommand cmd = new SqlCommand("SELECT * " +
+                           "FROM Court  " + connection);
                 connection.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Player player = new Player();
-                        player.Id_Person = reader.GetInt32("id_person");
-                        player.Gender = reader.GetString("Gender");
-                        player.Ranking = reader.GetInt32("Ranking");
-                        player.Firstname = reader.GetString("Firstname");
-                        player.Lastname = reader.GetString("Lastname");
-                        player.Nationality = reader.GetString("Nationality");
-                        Players.Add(player);
+                        Court Court = new Court();
+                        Court.Id_Court = reader.GetInt32("Id_court");
+                        Court.NbSpectators = reader.GetInt32("nbSpectators");
+                        Court.Covered = reader.GetBoolean("covered");
+                        Court.Tournament.Id_Tournament = reader.GetInt32("Id_Tournament");
+                        
+                        Courts.Add(Court);
                     }
                 }
             }
 
-            return Players;
+            return Courts;
         }
-        public bool InsertPlayer(Player p)
+       /* public bool InsertCourt(Court p)
         {
             bool succes = false;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand($"INSERT INTO dbo.Players(Lastname) VALUES(@Lastname)", connection);
+                SqlCommand cmd = new SqlCommand($"INSERT INTO dbo.Courts(Lastname) VALUES(@Lastname)", connection);
                 cmd.Parameters.AddWithValue("Lastname", p.Lastname);
                 connection.Open();
                 int res = cmd.ExecuteNonQuery();
@@ -58,5 +57,6 @@ namespace ProjetTennis.DAO
             }
             return succes;
         }
-    }
+    }*/
+}
 }

@@ -10,53 +10,53 @@ using System.Threading.Tasks;
 
 namespace ProjetTennis.DAO
 {
-    internal class PlayerDAO
+    internal class RefereeDAO
     {
         private string connectionString;
-        public PlayerDAO()
+        public RefereeDAO()
         {
             connectionString = ConfigurationManager.ConnectionStrings["TennisProjet"].ConnectionString;
         }
-        public List<Player> GetPlayers()
+        public List<Referee> GetReferees()
         {
-            List<Player> Players = new List<Player>();
+            List<Referee> Referees = new List<Referee>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT P.Id_Person, P.firstname, P.lastname,P.nationality, PL.ranking, PL.gender " +
-                           "FROM Person P " +
-                           "JOIN Player PL ON P.Id_Person = PL.Id_Person", connection);
+             
+
+                SqlCommand cmd = new SqlCommand("SELECT P.Id_Person, P.firstname, P.lastname, P.nationality " +
+                   "FROM Person P " + "JOIN Referee R ON P.Id_Person = R.Id_Person", connection);
+
                 connection.Open();
                 using (SqlDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Player player = new Player();
-                        player.Id_Person = reader.GetInt32("id_person");
-                        player.Gender = reader.GetString("Gender");
-                        player.Ranking = reader.GetInt32("Ranking");
-                        player.Firstname = reader.GetString("Firstname");
-                        player.Lastname = reader.GetString("Lastname");
-                        player.Nationality = reader.GetString("Nationality");
-                        Players.Add(player);
+                        Referee referee = new Referee();
+                        referee.Id_Person = reader.GetInt32("id_person");
+                        referee.Firstname = reader.GetString("Firstname");
+                        referee.Lastname = reader.GetString("Lastname");
+                        referee.Nationality = reader.GetString("Nationality");
+                        Referees.Add(referee);
                     }
                 }
             }
 
-            return Players;
+            return Referees;
         }
-        public bool InsertPlayer(Player p)
+     /*   public bool InsertReferee(Referee p)
         {
             bool succes = false;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand($"INSERT INTO dbo.Players(Lastname) VALUES(@Lastname)", connection);
+                SqlCommand cmd = new SqlCommand($"INSERT INTO dbo.Referees(Lastname) VALUES(@Lastname)", connection);
                 cmd.Parameters.AddWithValue("Lastname", p.Lastname);
                 connection.Open();
                 int res = cmd.ExecuteNonQuery();
                 succes = res > 0;
             }
             return succes;
-        }
+        }*/
     }
 }
