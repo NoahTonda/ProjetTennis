@@ -11,15 +11,20 @@ namespace ProjetTennis.Models
     {
         public int Ranking { get; set; }
         public string Gender { get; set; }
-
-        public List<Play> plays { get; set; }
-      
+        public Player()
+        {
+            
+        }
         public static List<Player> GetPlayers()
         {
             PlayerDAO dao = new PlayerDAO();
             return dao.GetPlayers();
         }
-
+        public Player(int PersonId , string firstname)
+        {
+            Id_Person = PersonId;
+            Firstname = firstname;
+        }
         public override string ToString()
         {
             return $"{this.Firstname} {this.Lastname}, {this.Nationality}, {Gender},{Ranking}";

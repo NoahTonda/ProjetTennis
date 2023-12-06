@@ -15,7 +15,8 @@ namespace ProjetTennis.Models
         public Person Referee { get; set; }
         public Court Court { get; set; }
         public Schedule Schedule { get; set; }
-        public List<Play> Plays { get; set; }
         public List<Sets> Sets { get; set; }
+        public Opponent Opponent1 { get; set; }
+        public Opponent Opponent2 { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace ProjetTennis.DAO
                     while (reader.Read())
                     {
                         SuperTieBreak SuperTieBreak = new SuperTieBreak();
-                        SuperTieBreak.Sets.Id_Set = reader.GetInt32("Id_Set");
+                        SuperTieBreak.Id_Set= reader.GetInt32("Id_Set");
                    
                         SuperTieBreaks.Add(SuperTieBreak);
                     }
