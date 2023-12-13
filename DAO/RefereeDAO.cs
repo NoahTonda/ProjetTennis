@@ -24,7 +24,7 @@ namespace ProjetTennis.DAO
             {
              
 
-                SqlCommand cmd = new SqlCommand("SELECT P.Id_Person, P.firstname, P.lastname, P.nationality " +
+                SqlCommand cmd = new SqlCommand("SELECT P.Id_Person, P.firstname, P.lastname, P.nationality, R.Available " +
                    "FROM Person P " + "JOIN Referee R ON P.Id_Person = R.Id_Person", connection);
 
                 connection.Open();
@@ -37,26 +37,47 @@ namespace ProjetTennis.DAO
                         referee.Firstname = reader.GetString("Firstname");
                         referee.Lastname = reader.GetString("Lastname");
                         referee.Nationality = reader.GetString("Nationality");
+                        referee.IsAvailable = reader.GetBoolean("Available");
                         Referees.Add(referee);
+                        
                     }
                 }
             }
 
             return Referees;
         }
-     /*   public bool InsertReferee(Referee p)
+        public void Update(Referee referee)
         {
-            bool succes = false;
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand($"INSERT INTO dbo.Referees(Lastname) VALUES(@Lastname)", connection);
-                cmd.Parameters.AddWithValue("Lastname", p.Lastname);
+
+
+                SqlCommand cmd = new SqlCommand("UPDATE referee set available=@Available "
+                   + "where id_person=@RefereeId", connection);
+
                 connection.Open();
-                int res = cmd.ExecuteNonQuery();
-                succes = res > 0;
+                using (SqlCommand updateCmd = cmd)
+                {
+                    // Ajouter les paramètres
+                    updateCmd.Parameters.AddWithValue("@Available", referee.IsAvailable);
+                    updateCmd.Parameters.AddWithValue("@RefereeId", referee.Id_Person);
+
+                    // Exécuter la commande UPDATE
+                    int rowsAffected = updateCmd.ExecuteNonQuery();
+
+                    // Vérifier si la mise à jour a réussi
+                    if (rowsAffected > 0)
+                    {
+                        Console.WriteLine("Mise à jour réussie.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Échec de la mise à jour. Aucune ligne affectée.");
+                    }
+                }
             }
-            return succes;
-        }*/
+           
+        }
+     
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjetTennis.DAO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,17 @@ namespace ProjetTennis.Models
         public int Id_Court { get; set; }
         public int NbSpectators { get; set; }
         public bool Covered { get; set; }
+        public bool IsAvailable { get; set; }
+        public bool Available()
+        {
+            return IsAvailable;
+        }
         public Tournament Tournament { get; set; }
         public List<Match> Matches { get; set; }
+
+        public override string ToString()
+        {
+            return $"id : {this.Id_Court}, spec : {this.NbSpectators}, covered : {this.Covered}, available: {this.IsAvailable}";
+        }
     }
 }
