@@ -12,7 +12,8 @@ namespace ProjetTennis.Models
         {
             Console.WriteLine("SUPER TIE BREAK :");
             Random random = new Random();
-            int PointOp1 = 0, PointOp2 = 0;
+            ScoreOp1 = 0;
+            ScoreOp2 = 0;
             int winningPlayer;
 
 
@@ -23,16 +24,18 @@ namespace ProjetTennis.Models
 
                 if (winningPlayer == 0)
                 {
-                    PointOp1++;
+                    ScoreOp1++;
                 }
                 else
                 {
-                    PointOp2++;
+                    ScoreOp2++;
                 }
-                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {PointOp1} - {PointOp2} {Match.Opponent2.Player1.Firstname}");
+                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
 
-            } while (!(PointOp1 >= 10 || PointOp2 >= 10) || (Math.Abs(PointOp1 - PointOp2) < 2));
-            if(PointOp1 > PointOp2)
+            }
+            while (!(ScoreOp1 >= 10 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2) && !(ScoreOp2 >= 10 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2));
+
+            if (ScoreOp1 > ScoreOp2)
             {
                 return 1;
             }

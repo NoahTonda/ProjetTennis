@@ -30,14 +30,9 @@ namespace ProjetTennis.Test
                 Opponent2 = new Opponent { Id_Opponent = 2, Player1 = player2Details }
             };
 
-            // Création d'une instance Sets pour le test
-            Sets sets = new Sets { Match = match };
 
-            // Logique du jeu
-            Random random = new Random();
-            sets.Play();
-            Console.WriteLine($"Score final : {sets.ScoreOp1} - {sets.ScoreOp2}");
-            Console.WriteLine($"Vainqueur : {sets.WinnerOpponent?.Player1.Firstname ?? "Aucun"}");
+            match.Play();
+            
 
             Console.ReadLine(); // Pour maintenir la console ouverte pendant les tests
         }

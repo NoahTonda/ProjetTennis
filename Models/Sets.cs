@@ -14,79 +14,32 @@ namespace ProjetTennis.Models
         public Opponent WinnerOpponent { get; set; }
         public Match Match { get; set; }
 
-        public void Play()
-        {
-            if (Match.Round == 3)
-            {
-                do
-                {
-                    SetCount();
-                    if(ScoreOp1==1&&ScoreOp2==1)
-                    {
-                        SuperTieBreak superTieBreak = new SuperTieBreak { Match=Match };
-                        if (superTieBreak.Play() == 1)
-                        {
-                            ScoreOp1++;
-                        }
-                        else
-                        {
-                            ScoreOp2++;
-                        }
-                    }
-                } while (ScoreOp1 < 2 && ScoreOp2 < 2);
-            }
-            else
-            {
-                do
-                {
-                    SetCount();
-                    if (ScoreOp1 == 2 && ScoreOp2 == 2)
-                    {
-                        SuperTieBreak superTieBreak = new SuperTieBreak { Match = Match };
-                        if (superTieBreak.Play() == 1)
-                        {
-                            ScoreOp1++;
-                        }
-                        else
-                        {
-                            ScoreOp2++;
-                        }
-                    }
-                } while (ScoreOp1 < 3 && ScoreOp2 < 3);
-            }
-            if (ScoreOp1 > ScoreOp2)
-            {
-                WinnerOpponent = Match.Opponent1;
-            }
-            else
-            {
-                WinnerOpponent = Match.Opponent2;
-            }
-        }
+        
         public int TieBreak()
         {
             Console.WriteLine("TIE BREAK");
             Random random = new Random();
-            int PointOp1 = 0, PointOp2 = 0;
+            ScoreOp1 = 0;
+            ScoreOp2 = 0;
             int winningPlayer;
-            
+
             do
             {
-
                 winningPlayer = random.Next(0, 2);
 
                 if (winningPlayer == 0)
                 {
-                    PointOp1++;
+                    ScoreOp1++;
                 }
                 else
                 {
-                    PointOp2++;
+                    ScoreOp2++;
                 }
-                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {PointOp1} - {PointOp2} {Match.Opponent2.Player1.Firstname}");
-            } while (!(PointOp1 >= 7 || PointOp2 >= 7) || (Math.Abs(PointOp1 - PointOp2) < 2));
+                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+            } while (!(ScoreOp1 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2) && !(ScoreOp2 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2));
 
-            if (PointOp1 > PointOp2)
+
+            if (ScoreOp1 > ScoreOp2)
             {
                 return 1;
             }
@@ -95,42 +48,64 @@ namespace ProjetTennis.Models
                 return 2;
             }
         }
-        public void SetCount()
+        public void Play()
         {
             Random random = new Random();
-            int PointOp1 = 0, PointOp2 = 0;
             int winningPlayer;
-
+            ScoreOp1 = 0;
+            ScoreOp2=0;
             do
             {
                 winningPlayer = random.Next(0, 2);
 
                 if (winningPlayer == 0)
                 {
-                    PointOp1++;
+                    ScoreOp1++;
                 }
                 else
                 {
-                    PointOp2++;
+                    ScoreOp2++;
                 }
-                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {PointOp1} - {PointOp2} {Match.Opponent2.Player1.Firstname}");
-
-                if (PointOp1==6&&PointOp2==6)
+                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+                if (ScoreOp1 == 6 && ScoreOp2 == 6)
                 {
-                    if(TieBreak()==1)
+                    if (TieBreak() == 1)
                     {
-                        PointOp1++;
+                        ScoreOp1++;
                     }
                     else
                     {
-                        PointOp2++;
+                        ScoreOp2++;
                     }
-                    Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {PointOp1} - {PointOp2} {Match.Opponent2.Player1.Firstname}");
-
+                    Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+                }
+                if ((ScoreOp1 == 6 || ScoreOp2 == 6) && Math.Abs(ScoreOp1 - ScoreOp2) >= 2)
+                {
+                    if (ScoreOp1 > ScoreOp2)
+                    {
+                        WinnerOpponent = Match.Opponent1;
+                    }
+                    else
+                    {
+                        WinnerOpponent=Match.Opponent2;
+                    }
+                    break;
+                }
+                else if (ScoreOp1 == 7 || ScoreOp2 == 7)
+                {
+                    if (ScoreOp1 > ScoreOp2)
+                    {
+                        WinnerOpponent = Match.Opponent1;
+                    }
+                    else
+                    {
+                        WinnerOpponent = Match.Opponent2;
+                    }
+                    break;
                 }
 
-            } while (PointOp1 < 7 && PointOp2 < 7);
-            if (PointOp1 > PointOp2)
+            } while (true);
+            if (ScoreOp1 > ScoreOp2)
             {
                 ScoreOp1++;
             }
@@ -138,7 +113,6 @@ namespace ProjetTennis.Models
             {
                 ScoreOp2++;
             }
-            Console.WriteLine($"MATCH SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
 
         }
     }
