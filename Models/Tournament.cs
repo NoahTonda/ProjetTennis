@@ -13,5 +13,11 @@ namespace ProjetTennis.Models
         public List<Court> courts { get; set; }
         public List<RefereeTournament> referees { get; set; }
         public List<Schedule> schedules { get; set; }
+        public void Play()
+        {
+            Name = "Wimbledon";
+            Schedule schedule = new Schedule { Tournament=this};
+            schedule.Play();
+        }
     }
 }

@@ -14,7 +14,17 @@ namespace ProjetTennis.Models
         public Opponent WinnerOpponent { get; set; }
         public Match Match { get; set; }
 
-
+        public void ShowScore()
+        {
+            if (Match.Schedule.Type == Schedule.ScheduleType.LadiesSingle || Match.Schedule.Type == Schedule.ScheduleType.GentlemanSingle)
+            { 
+                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1}");
+            }
+            else 
+            {
+                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1} & {Match.Opponent1.Player2} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1} & {Match.Opponent2.Player2}");
+            }       
+        }
         public int TieBreak()
         {
             Console.WriteLine("TIE BREAK");
@@ -35,7 +45,7 @@ namespace ProjetTennis.Models
                 {
                     ScoreOp2++;
                 }
-                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+              ShowScore();
             } while (!((ScoreOp1 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2) || (ScoreOp2 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2)));
 
 
@@ -50,6 +60,7 @@ namespace ProjetTennis.Models
         }
         public void Play()
         {
+            TieBreak tieBreak = new TieBreak {Match = Match };
             Random random = new Random();
             int winningPlayer;
             ScoreOp1 = 0;
@@ -66,10 +77,10 @@ namespace ProjetTennis.Models
                 {
                     ScoreOp2++;
                 }
-                Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+                ShowScore();
                 if (ScoreOp1 == 6 && ScoreOp2 == 6)
                 {
-                    if (TieBreak() == 1)
+                    if (tieBreak.Play() == 1)
                     {
                         ScoreOp1++;
                     }
@@ -77,7 +88,7 @@ namespace ProjetTennis.Models
                     {
                         ScoreOp2++;
                     }
-                    Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1.Firstname}");
+                    ShowScore();
                 }
                 if ((ScoreOp1 == 6 || ScoreOp2 == 6) && Math.Abs(ScoreOp1 - ScoreOp2) >= 2)
                 {

@@ -35,9 +35,9 @@ namespace ProjetTennis.Test
 
             //Console.ReadLine(); // Pour maintenir la console ouverte pendant les tests
 
-            Schedule schedule = new Schedule();
+            Tournament tournament = new Tournament();
 
-            schedule.CreateMatch();
+            tournament.Play();
 
         }
     }

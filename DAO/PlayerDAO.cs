@@ -117,7 +117,7 @@ namespace ProjetTennis.DAO
                     "where gender = 'Male' "+
                     "UNION "+
                     "SELECT TOP (64) P.Id_Person, P.firstname, P.lastname,P.nationality, PL.ranking, PL.gender " +
-                    "FROM Person " +
+                    "FROM Person P " +
                     "JOIN Player PL ON P.Id_Person = PL.Id_Person " +
                     "where gender = 'Female'"
                     , connection);

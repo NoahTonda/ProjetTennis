@@ -16,16 +16,21 @@ namespace ProjetTennis.Models
         {
             return IsAvailable;
         }
-        public static List<Referee> GetReferee()
+        public static List<Referee> GetReferees()
         {
-            RefereeDAO dao = new RefereeDAO();
-            return dao.GetReferees();
+            RefereeDAO refereeDAO = new RefereeDAO();
+            return refereeDAO.GetReferees();
         }
 
         public override string ToString()
         {
             return $"{this.Firstname} {this.Lastname}, {this.Nationality}";
         }
-
+        public void Release()
+        {
+            IsAvailable = true;
+            RefereeDAO refereeDAO = new RefereeDAO();
+            refereeDAO.Update(this);
+        }
     }
 }

@@ -19,7 +19,8 @@ namespace ProjetTennis.Models
         public List<Sets> Sets { get; set; }
         public Opponent Opponent1 { get; set; }
         public Opponent Opponent2 { get; set; }
-
+        public Opponent WinnerOpponent { get; set; }
+        public int ScoreOp1 = 0, ScoreOp2 = 0;
 
         public Match(DateTime DateMatch, int round, Schedule schedule, Opponent opponent1, Opponent opponent2)
         {
@@ -33,26 +34,39 @@ namespace ProjetTennis.Models
         {
             
         }
-        public Opponent GetWinner(int Point1, int Point2)
+        public void GetWinner(int Point1, int Point2)
         {
             
             if (Point1 < Point2)
             {
-                return Opponent2;
+                WinnerOpponent=Opponent2;
             }
             else
             {
-                return Opponent1;
+                WinnerOpponent=Opponent1;
+            }
+        }
+
+
+        
+        public void ShowScore()
+        {
+            if(Schedule.Type== Schedule.ScheduleType.LadiesSingle || Schedule.Type==Schedule.ScheduleType.GentlemanSingle)
+            {
+                Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {Opponent1.Player1.Lastname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname} {Opponent2.Player1.Lastname}");
+            }
+            else 
+            {
+                Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {Opponent1.Player1.Lastname} & {Opponent1.Player2.Firstname} {Opponent1.Player2.Lastname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname} {Opponent2.Player1.Lastname} & {Opponent2.Player2.Firstname} {Opponent2.Player2.Lastname}");
             }
         }
         public void Play()
         {
             RefereeDAO refereeDAO = new RefereeDAO();
-            int ScoreOp1=0,ScoreOp2=0;
             Sets set = new Sets { Match=this};
-            List<Referee> referees = refereeDAO.GetReferees();
+            List<Referee> referees = Referee.GetReferees();
             CourtDAO courtDAO = new CourtDAO();
-            List<Court> courts = courtDAO.GetCourts();
+            List<Court> courts = Court.GetCourts();
             foreach (Referee referee in referees)
             {
                 if (referee.Available())
@@ -100,7 +114,7 @@ namespace ProjetTennis.Models
                         {
                             ScoreOp2++;
                         }
-                        Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname}");
+                        ShowScore();
 
                         if (ScoreOp1 == 1 && ScoreOp2 == 1)
                         {
@@ -113,7 +127,7 @@ namespace ProjetTennis.Models
                             {
                                 ScoreOp2++;
                             }
-                            Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname}");
+                            ShowScore();
                         }
                     } while (ScoreOp1 < 2 && ScoreOp2 < 2);
                 }
@@ -130,7 +144,7 @@ namespace ProjetTennis.Models
                         {
                             ScoreOp2++;
                         }
-                        Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname}");
+                        ShowScore();
 
                         if (ScoreOp1 == 2 && ScoreOp2 == 2)
                         {
@@ -143,7 +157,7 @@ namespace ProjetTennis.Models
                             {
                                 ScoreOp2++;
                             }
-                            Console.WriteLine($"MATCH SCORE : {Opponent1.Player1.Firstname} {ScoreOp1} - {ScoreOp2} {Opponent2.Player1.Firstname}");
+                            ShowScore();
 
                         }
                     } while (ScoreOp1 < 3 && ScoreOp2 < 3);
@@ -151,18 +165,23 @@ namespace ProjetTennis.Models
                 }
                 Duration = TimeSpan.FromMinutes((ScoreOp1 + ScoreOp2) *35);
                 Console.WriteLine($"Score final : {ScoreOp1} - {ScoreOp2}");
-                Console.WriteLine($"Vainqueur : {GetWinner(ScoreOp1,ScoreOp2).Player1.Firstname ?? "Aucun"}");
+                GetWinner(ScoreOp1, ScoreOp2);
+                if(Schedule.Type== Schedule.ScheduleType.LadiesSingle || Schedule.Type==Schedule.ScheduleType.GentlemanSingle)
+                {
+                    Console.WriteLine($"Vainqueur : {WinnerOpponent.Player1.Firstname} {WinnerOpponent.Player1.Lastname}");
+                }
+                else
+                {
+                    Console.WriteLine($"Vainqueur : {WinnerOpponent.Player1.Firstname } {WinnerOpponent.Player1.Lastname} & {WinnerOpponent.Player2.Firstname ?? "Aucun"} {WinnerOpponent.Player2.Lastname}");
+                }
                 Console.WriteLine($"Durée : {Duration}");
             }
             else
             {
                 Console.WriteLine("aucun arbitre disponible");
             }
-            Referee.IsAvailable = true;
-            Court.IsAvailable = true;
-            refereeDAO.Update(Referee);
-            courtDAO.Update(Court);
-
+            Referee.Release();
+            Court.Release();
         }
 
     }

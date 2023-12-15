@@ -27,7 +27,7 @@ namespace ProjetTennis.Models
         }
         public override string ToString()
         {
-            return $"{this.Firstname} {this.Lastname}, {this.Nationality}, {Gender},{Ranking}";
+            return $"{this.Firstname} {this.Lastname}, {this.Nationality}";
         }
     }
 }

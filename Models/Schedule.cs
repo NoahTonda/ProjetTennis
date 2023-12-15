@@ -1,26 +1,73 @@
 ﻿using ProjetTennis.DAO;
+using ProjetTennis.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ProjetTennis.Models.Schedule;
 
 namespace ProjetTennis.Models
 {
     internal class Schedule
     {
         public int Id_Schedule { get; set; }
-        public enum Type { GentlemanSingle, LadiesSingle, GentlemanDouble,LadiesDouble,MixedDouble }
+        public enum ScheduleType { GentlemanSingle, LadiesSingle, GentlemanDouble, LadiesDouble, MixedDouble }
+        public ScheduleType Type { get; set; }
         public int ActualRound { get; set; }
         public Tournament Tournament { get; set; }
         public List<Match> Matches { get; set; }
-
+        List<Opponent> winners = new List<Opponent>();
+        public void Play()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                Console.WriteLine($"ROUND {i + 1}");
+                PlayNextRound();
+                Console.WriteLine(Matches.Count);
+            }
+            winners = GetWinners();
+            if(Type==ScheduleType.GentlemanSingle || Type == ScheduleType.GentlemanSingle)
+            {
+                Console.WriteLine($"{winners[0].Player1} win {Tournament.Name}");
+            }
+            else
+            {
+                Console.WriteLine($"{winners[0].Player1} & {winners[0].Player2} win {Tournament.Name}");
+            }
+        }
         public void CreateMatch()
         {
-            
-            PlayerDAO playerDAO = new PlayerDAO();
-            List<Player> players = playerDAO.GetPlayers64Male();
             Matches = new List<Match>();
+            PlayerDAO playerDAO = new PlayerDAO();
+            // Utilisation de l'énumération
+            Type = ScheduleType.MixedDouble;
+            List<Player> players = null;
+            // Affichage de la valeur de l'énumération
+            Console.WriteLine($"Le type de match est : {Type}");
+
+            // Utilisation de l'énumération dans un switch
+            switch (Type)
+            {
+                case ScheduleType.GentlemanSingle:
+                    players = playerDAO.GetPlayers64Male();
+                    break;
+                case ScheduleType.LadiesSingle:
+                    players = playerDAO.GetPlayers64Female();
+                    break;
+                case ScheduleType.GentlemanDouble:
+                    players = playerDAO.GetPlayers128Male();
+                    break;
+                case ScheduleType.LadiesDouble:
+                    players = playerDAO.GetPlayers128Female();
+                    break;
+                case ScheduleType.MixedDouble:
+                    players = playerDAO.GetPlayers128Mixed();
+                    break;
+                default:
+                    Console.WriteLine("Type de match inconnu !");
+                    break;
+            }
 
             // Utilisez un objet Random pour générer des indices aléatoires
             Random random = new Random();
@@ -34,36 +81,156 @@ namespace ProjetTennis.Models
                 Console.WriteLine("Il n'y a pas suffisamment de joueurs pour jouer.");
                 return;
             }
-
-            // Parcourez la liste en prenant deux joueurs à la fois pour les faire jouer l'un contre l'autre
-            for (int i = 0; i < players.Count; i += 2)
+            Opponent opponent1 = new Opponent();
+            Opponent opponent2 = new Opponent();
+            foreach (var player in players)
             {
-                Opponent opponent1 = new Opponent();
-                opponent1.Player1 = players[i];
-                Opponent opponent2 = new Opponent();
-                opponent2.Player1 = (i + 1 < players.Count) ? players[i + 1] : null;
-
-                // Vérifiez si player2 est null (cas où il n'y a pas un nombre pair de joueurs)
-                if (opponent2 != null)
+                Console.WriteLine(player);
+            }
+            // Parcourez la liste en prenant deux joueurs à la fois pour les faire jouer l'un contre l'autre
+            if (Type == ScheduleType.GentlemanSingle || Type == ScheduleType.LadiesSingle)
+            {
+                for (int i = 0; i < players.Count; i += 2)
                 {
-                    Match match = new Match(DateTime.Now,5, this,opponent1, opponent2);
+                    opponent1 = new Opponent(); // Create new opponent for each iteration
+                    opponent2 = new Opponent(); // Create new opponent for each iteration
+                    opponent1.Player1 = players[i];
+                    opponent2.Player1 = players[i + 1];
+                    Match match = new Match(DateTime.Now, 5, this, opponent1, opponent2);
                     Matches.Add(match);
-                    // Faites jouer player1 contre player2
-                    // Ajoutez ici le code pour simuler le match ou effectuer d'autres opérations nécessaires
-                }
-                else
-                {
-                    // Cas où le nombre de joueurs est impair, player1 joue seul
-                    Console.WriteLine($"Player seul : {opponent1.Player1.Lastname}");
-                    // Ajoutez ici le code pour simuler le match ou effectuer d'autres opérations nécessaires
                 }
             }
-            Console.WriteLine(Matches.Count);
-            for (int i=0;i<Matches.Count;i++)
+            else if (Type == ScheduleType.GentlemanDouble || Type == ScheduleType.LadiesDouble)
             {
-                Matches[i].Play();
-                Console.WriteLine(i);
+                for (int i = 0; i < players.Count; i += 4)
+                {
+                    opponent1 = new Opponent(); // Create new opponent for each iteration
+                    opponent2 = new Opponent(); // Create new opponent for each iteration
+                    opponent1.Player1 = players[i];
+                    opponent1.Player2 = players[i + 1];
+                    opponent2.Player1 = players[i + 2];
+                    opponent2.Player2 = players[i + 3];
+                    Match match = new Match(DateTime.Now, 5, this, opponent1, opponent2);
+                    Matches.Add(match);
+                }
+            }
+            else if (Type == ScheduleType.MixedDouble)
+            {
+                List<Player> playersM = new List<Player>();
+                List<Player> playersF = new List<Player>();
+                foreach (var player in players)
+                {
+                    if (player.Gender == "Male")
+                    {
+                        playersM.Add(player);
+                    }
+                    else
+                    {
+                        playersF.Add(player);
+                    }
+                }
+                for (int i = 0; i < 64; i += 2)
+                {
+                    opponent1 = new Opponent(); // Create new opponent for each iteration
+                    opponent2 = new Opponent(); // Create new opponent for each iteration
+                    opponent1.Player1 = playersM[i];
+                    opponent1.Player2 = playersF[i];
+                    opponent2.Player1 = playersM[i + 1];
+                    opponent2.Player2 = playersF[i + 1];
+                    Match match = new Match(DateTime.Now, 5, this, opponent1, opponent2);
+                    Matches.Add(match);
+                }
             }
         }
+        public List<Opponent> GetWinners()
+        {
+            winners.Clear();
+            foreach (var match in Matches)
+            {
+                Opponent winnerOpponent = match.WinnerOpponent;
+                if (winnerOpponent != null)
+                {
+                    winners.Add(winnerOpponent);
+                }
+            }
+
+            return winners;
+        }
+        public void PlayNextRound()
+        {
+            if (Matches == null)
+            {
+                CreateMatch();
+                for (int j = 0; j < Matches.Count; j++)
+                {
+                    Matches[j].Play();
+                    Console.WriteLine(j);
+                }
+            }
+            else
+            {                
+                List<Opponent> winners = GetWinners();
+                Matches.Clear(); // Effacez les matchs du tour précédent
+                // Parcourez les gagnants pour créer de nouveaux matchs
+                for (int i = 0; i < winners.Count; i += 2)
+                {
+                    Opponent opponent1 = new Opponent();
+                    opponent1 = winners[i];
+                    Opponent opponent2 = new Opponent();
+                    opponent2 = (i + 1 < winners.Count) ? winners[i + 1] : null;
+
+                    // Créez le nouveau match
+                    Match match = new Match(DateTime.Now, 5, this, opponent1, opponent2);
+                    Matches.Add(match);                    
+                }
+            
+                // Affichez le nombre de matchs générés pour le tour suivant
+                Console.WriteLine($"Nouveau tour généré avec {Matches.Count} matchs.");
+                for (int j = 0; j < Matches.Count; j++)
+                {
+                    Matches[j].Play();
+                    Console.WriteLine(j);
+                }    
+
+            }
+            
+        }
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

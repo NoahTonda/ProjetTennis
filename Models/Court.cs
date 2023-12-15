@@ -17,6 +17,17 @@ namespace ProjetTennis.Models
         {
             return IsAvailable;
         }
+        public void Release()
+        {
+            IsAvailable = true;
+            CourtDAO courtDAO = new CourtDAO();
+            courtDAO.Update(this);
+        }
+        public static List<Court> GetCourts()
+        {
+            CourtDAO courtDAO = new CourtDAO();
+            return courtDAO.GetCourts();
+        }
         public Tournament Tournament { get; set; }
         public List<Match> Matches { get; set; }
 
