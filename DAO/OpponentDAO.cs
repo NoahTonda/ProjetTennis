@@ -31,7 +31,7 @@ namespace ProjetTennis.DAO
                     while (reader.Read())
                     {
                         Opponent Opponent = new Opponent();
-                        Opponent.Id_Opponent = reader.GetInt32("id_opponent");
+                        
                     
 
                         Opponents.Add(Opponent);

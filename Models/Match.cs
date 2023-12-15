@@ -21,8 +21,18 @@ namespace ProjetTennis.Models
         public Opponent Opponent2 { get; set; }
 
 
-
-
+        public Match(DateTime DateMatch, int round, Schedule schedule, Opponent opponent1, Opponent opponent2)
+        {
+            this.DateMatch = DateMatch;
+            this.Round = round;
+            this.Schedule = schedule;
+            this.Opponent1 = opponent1;
+            this.Opponent2 = opponent2;
+        }
+        public Match()
+        {
+            
+        }
         public Opponent GetWinner(int Point1, int Point2)
         {
             
@@ -51,7 +61,6 @@ namespace ProjetTennis.Models
                     Referee = referee;
                     Referee.IsAvailable = false;
                     refereeDAO.Update(Referee);
-
                     break;
                 }
             }
@@ -60,11 +69,9 @@ namespace ProjetTennis.Models
             {
                 if (court.Available())
                 {
-
                     Court = court;
                     Court.IsAvailable = false;
                     courtDAO.Update(Court);
-
                     break;
                 }
             }
@@ -152,8 +159,9 @@ namespace ProjetTennis.Models
                 Console.WriteLine("aucun arbitre disponible");
             }
             Referee.IsAvailable = true;
+            Court.IsAvailable = true;
             refereeDAO.Update(Referee);
-
+            courtDAO.Update(Court);
 
         }
 

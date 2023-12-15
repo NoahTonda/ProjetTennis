@@ -36,7 +36,6 @@ namespace ProjetTennis.DAO
                         Set.Id_Set = reader.GetInt32("id_set");
                         Set.ScoreOp1 = reader.GetInt32("ScoreOp1");
                         Set.ScoreOp2 = reader.GetInt32("ScoreOp2");
-                        Set.WinnerOpponent.Id_Opponent = reader.GetInt32("id_Opponent");
                         Set.Match.Id_Match = reader.GetInt32("Id_Match");
                         Sets.Add(Set);
                     }
