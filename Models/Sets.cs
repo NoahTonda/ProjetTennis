@@ -25,39 +25,7 @@ namespace ProjetTennis.Models
                 Console.WriteLine($"SET SCORE : {Match.Opponent1.Player1} & {Match.Opponent1.Player2} {ScoreOp1} - {ScoreOp2} {Match.Opponent2.Player1} & {Match.Opponent2.Player2}");
             }       
         }
-        public int TieBreak()
-        {
-            Console.WriteLine("TIE BREAK");
-            Random random = new Random();
-            ScoreOp1 = 0;
-            ScoreOp2 = 0;
-            int winningPlayer;
-
-            do
-            {
-                winningPlayer = random.Next(0, 2);
-
-                if (winningPlayer == 0)
-                {
-                    ScoreOp1++;
-                }
-                else
-                {
-                    ScoreOp2++;
-                }
-              ShowScore();
-            } while (!((ScoreOp1 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2) || (ScoreOp2 >= 7 && Math.Abs(ScoreOp1 - ScoreOp2) >= 2)));
-
-
-            if (ScoreOp1 > ScoreOp2)
-            {
-                return 1;
-            }
-            else
-            {
-                return 2;
-            }
-        }
+       
         public void Play()
         {
             TieBreak tieBreak = new TieBreak {Match = Match };
@@ -116,14 +84,7 @@ namespace ProjetTennis.Models
                 }
 
             } while (true);
-            if (ScoreOp1 > ScoreOp2)
-            {
-                ScoreOp1++;
-            }
-            else
-            {
-                ScoreOp2++;
-            }
+     
 
         }
     }
